@@ -3,3 +3,5 @@ A Bot-based Android chat app that showcases the implementation of Material You i
 
 ### Figma design `(trial and error colors)`
 ![image](media/color_bg.png)
+
+# Work in progress ⚙️ ⚒️
