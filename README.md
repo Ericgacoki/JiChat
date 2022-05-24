@@ -1,4 +1,4 @@
-# JiChat
+# JiChat 🤖
 A Bot-based Android chat app that showcases the implementation of Material You in Android.
 
 ### Figma design `(trial and error colors)`
