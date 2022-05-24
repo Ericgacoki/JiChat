@@ -1,6 +1,7 @@
 *.iml
 .gradle
 /.gradle*
+gradle/wrapper
 /local.properties
 /.idea*
 /.idea/assetWizardSettings.xml
