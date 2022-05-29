@@ -1,6 +1,9 @@
 package com.ericg.jichat.di
 
-import com.ericg.jichat.data.remote.APIService
+import android.app.Application
+import androidx.room.Room
+import com.ericg.jichat.data.local.ChatDatabase
+import com.ericg.jichat.data.remote.ApiService
 import com.ericg.jichat.data.repository.ChatRepository
 import com.ericg.jichat.util.Constants.BASE_URL
 import dagger.Module
@@ -37,18 +40,28 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun providesAPIService(okHttpClient: OkHttpClient): APIService {
+    fun providesAPIService(okHttpClient: OkHttpClient): ApiService {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
-            .create(APIService::class.java)
+            .create(ApiService::class.java)
     }
 
     @Singleton
     @Provides
-    fun providesChatRepository(apiService: APIService): ChatRepository {
-        return ChatRepository(apiService)
+    fun providesChatRepository(apiService: ApiService, chatsDatabase: ChatDatabase): ChatRepository {
+        return ChatRepository(apiService, chatsDatabase)
+    }
+
+    @Singleton
+    @Provides
+    fun providesChatsDatabase(application: Application): ChatDatabase {
+        return Room.databaseBuilder(
+            application.applicationContext,
+            ChatDatabase::class.java,
+            "chats_database",
+        ).fallbackToDestructiveMigration().build()
     }
 }

@@ -13,9 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ericg.jichat.screens.ChatScreen
 import com.ericg.jichat.ui.theme.JiChatTheme
+import com.ericg.jichat.viewmodel.ChatViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Suppress("DEPRECATION") // 🤪
 @AndroidEntryPoint
@@ -23,7 +27,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+
         setContent {
+            val chatsViewModel: ChatViewModel = hiltViewModel()
             JiChatTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -47,7 +53,9 @@ class MainActivity : ComponentActivity() {
                                 )
                                 IconButton(
                                     modifier = Modifier.padding(horizontal = 12.dp),
-                                    onClick = {}) {
+                                    onClick = {
+                                        chatsViewModel.deleteChats()
+                                    }) {
                                     Icon(
                                         imageVector = Icons.Rounded.Delete,
                                         contentDescription = "delete icon"
@@ -60,6 +68,14 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+
+    companion object {
+        fun getTime(): String {
+            val current = LocalDateTime.now()
+            val formatter = DateTimeFormatter.ofPattern("h:mm a")
+            return current.format(formatter)
         }
     }
 }
