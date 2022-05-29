@@ -16,7 +16,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
@@ -25,29 +24,28 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ericg.jichat.MainActivity.Companion.getTime
 import com.ericg.jichat.model.Chat
 import com.ericg.jichat.model.SenderType
 import com.ericg.jichat.ui.theme.JiChatTheme
 import com.ericg.jichat.viewmodel.ChatViewModel
-import com.ericg.jichat.viewmodel.getTime
-import dev.chrisbanes.accompanist.insets.navigationBarsWithImePadding
-import timber.log.Timber
 
 @Composable
 fun ChatScreen(
     chatViewModel: ChatViewModel = hiltViewModel()
 ) {
-    val chats = chatViewModel.chats
+    val chats = chatViewModel.chats.collectAsState(initial = emptyList())
+
     val chatsState = rememberLazyListState()
-    LaunchedEffect(key1 = chats.size){
-        chatsState.animateScrollToItem(chats.size)
+    LaunchedEffect(key1 = chats.value.size) {
+        chatsState.animateScrollToItem(chats.value.size)
     }
 
     LazyColumn(
         state = chatsState,
         modifier = Modifier.fillMaxHeight(0.85F),
     ) {
-        items(chats) { chat ->
+        items(chats.value) { chat ->
             ChatItem(chat = chat)
         }
     }
@@ -57,13 +55,12 @@ fun ChatScreen(
         verticalArrangement = Arrangement.Bottom
     ) {
         ChatInputLayout { message ->
-            chatViewModel.chats.add(
-                Chat(
-                    sender = SenderType.HUMAN,
-                    message = message,
-                    time = getTime()
-                )
+            val humanChat = Chat(
+                sender = SenderType.HUMAN,
+                message = message,
+                time = getTime()
             )
+            chatViewModel.saveChat(humanChat)
             chatViewModel.getBotResponse(message)
         }
     }
@@ -91,8 +88,8 @@ fun ChatItem(chat: Chat) {
         ) {
             Text(
                 text = chat.message,
-                fontSize = 14.sp,
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                fontSize = 15.sp,
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp)
             )
         }
 
