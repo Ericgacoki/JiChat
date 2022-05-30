@@ -9,20 +9,18 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Send
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ericg.jichat.MainActivity.Companion.getTime
 import com.ericg.jichat.model.Chat
@@ -32,6 +30,7 @@ import com.ericg.jichat.viewmodel.ChatViewModel
 
 @Composable
 fun ChatScreen(
+    paddingValues: PaddingValues,
     chatViewModel: ChatViewModel = hiltViewModel()
 ) {
     val chats = chatViewModel.chats.collectAsState(initial = emptyList())
@@ -42,6 +41,7 @@ fun ChatScreen(
     }
 
     LazyColumn(
+        contentPadding = paddingValues,
         state = chatsState,
         modifier = Modifier.fillMaxHeight(0.85F),
     ) {
@@ -66,6 +66,7 @@ fun ChatScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatItem(chat: Chat) {
     Column(
@@ -77,25 +78,31 @@ fun ChatItem(chat: Chat) {
     ) {
         Text(
             text = if (chat.sender == SenderType.BOT) "Bot" else "You",
-            fontSize = 10.sp,
+            style = MaterialTheme.typography.labelSmall,
             modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 4.dp),
         )
 
-        Surface(
-            elevation = 2.dp,
+        Card(
             shape = if (chat.message.length < 24) CircleShape else RoundedCornerShape(4.dp),
-            modifier = Modifier.widthIn(max = 220.dp)
+            colors = CardDefaults.cardColors(
+                containerColor = if (chat.sender == SenderType.HUMAN)
+                    MaterialTheme.colorScheme.tertiary
+                else MaterialTheme.colorScheme.secondary,
+            ),
+            modifier = Modifier
+                .padding(horizontal = 8.dp)
+                .widthIn(max = 220.dp)
         ) {
             Text(
                 text = chat.message,
-                fontSize = 15.sp,
+                style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp)
             )
         }
 
         Text(
             text = chat.time,
-            fontSize = 8.sp,
+            style = MaterialTheme.typography.labelSmall,
             modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 6.dp),
         )
     }
@@ -107,11 +114,6 @@ fun ChatInputLayout(
     onSendClick: (message: String) -> Unit
 ) {
     var message by remember { mutableStateOf("") }
-    // FIXME: Use colors from Material-You
-    val textFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        focusedBorderColor = Color.LightGray,
-        unfocusedBorderColor = Color.LightGray
-    )
     Row(
         modifier = Modifier
             .padding(vertical = 12.dp)
@@ -128,7 +130,7 @@ fun ChatInputLayout(
                     message = newValue
                 }
             },
-            colors = textFieldColors,
+            // colors = textFieldColors,
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier
                 .padding(horizontal = 8.dp)
