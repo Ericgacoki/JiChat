@@ -9,5 +9,3 @@ A Bot-based Android chat app that showcases the implementation of Material You i
   <tr> <td> <img src="media/purple-dark.png"/></td> <td> <img src="media/purple-light.png"/></td> </tr>
   <tr> <td> <img src="media/green-dark.png"/></td> <td> <img src="media/green-light.png"/></td> </tr>
 </table>
-
-# Work in progress ⚙️ ⚒️
