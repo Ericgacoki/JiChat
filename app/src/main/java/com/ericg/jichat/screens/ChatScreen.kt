@@ -1,6 +1,7 @@
 package com.ericg.jichat.screens
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -41,7 +42,7 @@ fun ChatScreen(
     }
 
     LazyColumn(
-        contentPadding = paddingValues,
+        contentPadding = PaddingValues(bottom = 24.dp),
         state = chatsState,
         modifier = Modifier.fillMaxHeight(0.85F),
     ) {
@@ -108,13 +109,13 @@ fun ChatItem(chat: Chat) {
     }
 }
 
-
 @Composable
 fun ChatInputLayout(
     onSendClick: (message: String) -> Unit
 ) {
     var message by remember { mutableStateOf("") }
     Row(
+
         modifier = Modifier
             .padding(vertical = 12.dp)
             .fillMaxWidth(),
@@ -130,11 +131,10 @@ fun ChatInputLayout(
                     message = newValue
                 }
             },
-            // colors = textFieldColors,
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier
+                .weight(0.8f)
                 .padding(horizontal = 8.dp)
-                .fillMaxWidth(0.8F)
                 .widthIn(min = 150.dp),
             placeholder = {
                 Text(text = "Type something")
@@ -147,6 +147,7 @@ fun ChatInputLayout(
         )
 
         FloatingActionButton(modifier = Modifier
+            .weight(0.2f)
             .padding(12.dp)
             .size(42.dp),
             onClick = {
@@ -163,7 +164,7 @@ fun ChatInputLayout(
     }
 }
 
-@Preview(uiMode = UI_MODE_NIGHT_NO)
+@Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun ChatItemPre() {
     val chat = Chat(
@@ -172,11 +173,13 @@ fun ChatItemPre() {
         time = "02:55"
     )
     JiChatTheme() {
-        Column() {
-            ChatItem(chat = chat.copy(sender = SenderType.HUMAN))
-            ChatItem(chat = chat.copy(message = "Hello, Eric! How can I help you? Would you like a joke?"))
-            ChatInputLayout {
+        Surface(modifier = Modifier.fillMaxWidth()) {
+            Column() {
+                ChatItem(chat = chat.copy(sender = SenderType.HUMAN))
+                ChatItem(chat = chat.copy(message = "Hello, Eric! How can I help you? Would you like a joke?"))
+                ChatInputLayout {
 
+                }
             }
         }
     }
