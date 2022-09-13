@@ -2,24 +2,37 @@ package com.ericg.jichat.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ericg.jichat.MainActivity.Companion.getTime
 import com.ericg.jichat.data.repository.ChatRepository
 import com.ericg.jichat.model.Chat
 import com.ericg.jichat.model.SenderType
+import com.ericg.jichat.ui.ChatState
+import com.ericg.jichat.ui.MainActivity.Companion.getTime
 import com.ericg.jichat.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(private val repo: ChatRepository) : ViewModel() {
-    var chats: Flow<List<Chat>> = emptyFlow()
+    var uiState: MutableStateFlow<ChatState> = MutableStateFlow(ChatState())
+        private set
 
     init {
         getChats()
+    }
+
+    private fun upDateStateLoading() {
+        uiState.value = uiState.value.copy(loading = true, error = "")
+    }
+
+    private fun updateStateError(error: String) {
+        uiState.value = uiState.value.copy(error = error, loading = false)
+    }
+
+    private fun updateStateSuccess() {
+        uiState.value = uiState.value.copy(error = "", loading = false)
     }
 
     fun getBotResponse(message: String) {
@@ -31,23 +44,31 @@ class ChatViewModel @Inject constructor(private val repo: ChatRepository) : View
                         message = response.data!!.botResponse,
                         time = getTime()
                     )
+                    delay(1000) // remain loading to indicate "typing..."
+                    updateStateSuccess()
                     saveChat(botChat)
                 }
+                is Resource.Error -> {
+                    updateStateError(response.statusMessage ?: "")
+                }
                 else -> {
-                    Timber.e("Error loading bot response")
+                    upDateStateLoading()
                 }
             }
         }
     }
 
     fun saveChat(chat: Chat) {
+        if (chat.sender == SenderType.HUMAN){
+            upDateStateLoading()
+        }
         viewModelScope.launch {
             repo.saveChat(chat)
         }
     }
 
     private fun getChats() {
-        chats = repo.getChats()
+        uiState.value = uiState.value.copy(chats = repo.getChats(), error = "")
     }
 
     fun deleteChats() {

@@ -8,17 +8,20 @@ import com.ericg.jichat.util.Resource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class ChatRepository @Inject constructor(private val apiService: ApiService, private val chatsDatabase: ChatDatabase) {
-    suspend fun getBotResponse(message: String): Resource<BotResponse>{
-        val response = try {
-            apiService.getBotResponse(message = message)
-        } catch (e: Exception){
-            return Resource.Error(message = "Failed to load bot response")
+class ChatRepository @Inject constructor(
+    private val apiService: ApiService,
+    private val chatsDatabase: ChatDatabase
+) {
+    suspend fun getBotResponse(message: String): Resource<BotResponse> {
+        return try {
+            val response = apiService.getBotResponse(message = message)
+            Resource.Success(response)
+        } catch (e: Exception) {
+            Resource.Error(message = "Oh, uh!\nIt looks like you're offline \uD83D\uDCA9")
         }
-        return Resource.Success(response)
     }
 
-    suspend fun saveChat(chat: Chat){
+    suspend fun saveChat(chat: Chat) {
         chatsDatabase.chatsDao.saveChat(chat)
     }
 
@@ -26,7 +29,7 @@ class ChatRepository @Inject constructor(private val apiService: ApiService, pri
         return chatsDatabase.chatsDao.getChats()
     }
 
-    suspend fun deleteChats(){
+    suspend fun deleteChats() {
         chatsDatabase.chatsDao.deleteChats()
     }
 }
