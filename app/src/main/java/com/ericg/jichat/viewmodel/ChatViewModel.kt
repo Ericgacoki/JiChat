@@ -24,7 +24,10 @@ class ChatViewModel @Inject constructor(private val repo: ChatRepository) : View
     }
 
     private fun upDateStateLoading() {
-        uiState.value = uiState.value.copy(loading = true, error = "")
+        viewModelScope.launch {
+            delay(2000)
+            uiState.value = uiState.value.copy(loading = true, error = "")
+        }
     }
 
     private fun updateStateError(error: String) {

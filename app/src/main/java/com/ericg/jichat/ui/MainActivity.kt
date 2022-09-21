@@ -131,7 +131,7 @@ class MainActivity : ComponentActivity() {
                                 AnimatedVisibility(error.isNotEmpty()) {
                                     Box(
                                         modifier = Modifier
-                                            .padding(8.dp)
+                                            .padding(12.dp)
                                             .clip(RoundedCornerShape(8.dp))
                                             .background(MaterialTheme.colorScheme.error)
                                             .fillMaxWidth(),
