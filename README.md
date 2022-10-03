@@ -1,4 +1,5 @@
-# JiChat 🤖
+![jichat feature image](https://user-images.githubusercontent.com/54077752/193523800-53853006-33b7-4a3b-8e4e-d4ae26829df0.jpg)
+
 A Bot-based Android chat app that showcases the implementation of Material You in Android.
 
 <table>
