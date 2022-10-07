@@ -13,3 +13,6 @@ local.properties
 apikey.properties
 /app/release/output-metadata.json
 /app/release/app-release.aab
+/app/debug/app-debug.apk
+/app/release/app-release.apk
+/app/debug/output-metadata.json
