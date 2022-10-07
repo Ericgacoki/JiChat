@@ -9,6 +9,7 @@ import com.ericg.jichat.ui.ChatState
 import com.ericg.jichat.ui.MainActivity.Companion.getTime
 import com.ericg.jichat.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -25,7 +26,6 @@ class ChatViewModel @Inject constructor(private val repo: ChatRepository) : View
 
     private fun upDateStateLoading() {
         viewModelScope.launch {
-            delay(2000)
             uiState.value = uiState.value.copy(loading = true, error = "")
         }
     }
@@ -44,12 +44,12 @@ class ChatViewModel @Inject constructor(private val repo: ChatRepository) : View
                 is Resource.Success -> {
                     val botChat = Chat(
                         sender = SenderType.BOT,
-                        message = response.data!!.botResponse,
+                        message = response.data!!.botResponse ?: "Bot is unreachable a the moment!",
                         time = getTime()
                     )
-                    delay(1000) // remain loading to indicate "typing..."
-                    updateStateSuccess()
+                    delay(2000)
                     saveChat(botChat)
+                    updateStateSuccess()
                 }
                 is Resource.Error -> {
                     updateStateError(response.statusMessage ?: "")
@@ -62,7 +62,7 @@ class ChatViewModel @Inject constructor(private val repo: ChatRepository) : View
     }
 
     fun saveChat(chat: Chat) {
-        if (chat.sender == SenderType.HUMAN){
+        if (chat.sender == SenderType.HUMAN) {
             upDateStateLoading()
         }
         viewModelScope.launch {

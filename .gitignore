@@ -12,3 +12,4 @@
 local.properties
 apikey.properties
 /app/release/output-metadata.json
+/app/release/app-release.aab

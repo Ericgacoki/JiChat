@@ -6,11 +6,9 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
-    @GET("get?")
+    @GET("?")
     suspend fun getBotResponse(
-        @Query("bid") brainId: String = BuildConfig.BRAIN_ID,
-        @Query("key") apiKey: String = BuildConfig.JICHAT_API_KEY,
-        @Query("uid") uid: String = "[]",
-        @Query("msg") message: String
+        @Query("message") message: String,
+        @Query("name") name: String = "Aco",
     ): BotResponse
 }

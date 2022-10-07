@@ -17,7 +17,7 @@ class ChatRepository @Inject constructor(
             val response = apiService.getBotResponse(message = message)
             Resource.Success(response)
         } catch (e: Exception) {
-            Resource.Error(message = "Oh, uh!\nIt looks like you're offline \uD83D\uDCA9")
+            Resource.Error(message = "\uD83D\uDE24 Oh, uh! \nBot is unreachable a the moment!")
         }
     }
 

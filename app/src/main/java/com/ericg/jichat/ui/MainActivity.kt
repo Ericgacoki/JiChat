@@ -115,11 +115,11 @@ class MainActivity : ComponentActivity() {
                                     Box(
                                         modifier = Modifier
                                             .padding(8.dp)
-                                            .clip(RoundedCornerShape(4.dp))
+                                            .clip(RoundedCornerShape(6.dp))
                                             .background(MaterialTheme.colorScheme.primary)
                                     ) {
                                         Text(
-                                            text = "Typing...",
+                                            text = "loading...",
                                             modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
                                             color = MaterialTheme.colorScheme.onPrimary
                                         )
